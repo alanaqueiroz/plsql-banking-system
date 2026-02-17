@@ -1,116 +1,121 @@
-# 🏦 Sistema Bancário implementado em ORACLE PL/SQL
+# 🏦 Sistema Bancário Implementado em Oracle PL/SQL
 
-Este projeto demonstra a contrução de um sistema bancário simples em Oracle Database XE utilizando PL/SQL, triggers, packages e container Docker.
-Inclui criação de usuário, tabelas, trigger de saldo negativo, package de operações bancárias e testes práticos.
+Projeto voltado ao desenvolvimento de um sistema bancário simplificado com centralização das regras de negócio em PL/SQL no banco de dados Oracle. Simula operações bancárias como cadastro de clientes, abertura de contas, depósitos, saques e consulta de saldo via function. As regras de negócio são centralizadas em package PL/SQL, com trigger para prevenção de saldo negativo e registro automático para auditoria das transações financeiras.
 
-- Criação de usuário dedicado
-- Tabelas de clientes, contas e transações
-- Trigger para impedir saldo negativo
-- Package com regras de negócio (abrir conta, depósito, saque)
-- Scripts de teste e casos de erro (auditoria)
-- Execução em Oracle XE via Docker
+**Objetivo**:
+- Aplicar PL/SQL na implementação de regras de negócio
+- Demonstrar automação e auditoria através de triggers
+- Simular arquitetura de sistemas financeiros
+- Consolidar boas práticas de modelagem relacional e programação Oracle
 
-## 🚀 Tecnologias Utilizadas
+**Contexto**: Projeto acadêmico desenvolvido na disciplina Laboratório de Desenvolvimento em Banco de Dados VI do curso Tecnologia em Banco de Dados da FATEC (Faculdade de Tecnologia de Bauru).
 
-- **Ubuntu (via WSL)**
-- **Docker Engine (Imagem Oracle XE : gvenzl/oracle-xe)**
-- **Oracle Database XE 21c (PDB XEPDB1)**
-- **PL/SQL(Triggers, Packages, Foreign Keys, Constraints)**
-- **SQL*Plus**
+🎥 **Apresentação do Projeto (YouTube):** https://youtu.be/neQLM0JzVns
 
----
+## ⚙️ Tecnologias Utilizadas
 
-## 📦 Estrutura do Projeto
+- Oracle Database XE 21c
+- PL/SQL (Packages, Procedures, Functions, Triggers, Constraints)
+- SQL
+- Docker (Imagem `gvenzl/oracle-xe`)
+- SQL*Plus
+- Ubuntu via WSL
+
+## 🏗️ Arquitetura do Projeto
+
+O sistema foi estruturado em camadas lógicas dentro do banco de dados Oracle, centralizando as regras de negócio em PL/SQL e garantindo integridade referencial, consistência transacional, validações automatizadas e rastreabilidade das operações financeiras.
+
+- **Camada de Dados**: Responsável pela estrutura relacional e armazenamento dos dados. É composta pelas tabelas `CLIENTE`, `CONTA` e `TRANSACAO`, utilizando chaves primárias, estrangeiras, constraints UNIQUE, CHECK e colunas com IDENTITY para geração automática de identificadores. Essa camada assegura persistência das informações, integridade referencial e consistência estrutural do banco.
+
+- **Camada de Lógica**: Implementada por meio do package `pkg_bancario` (spec e body), que centraliza as regras de negócio do sistema. Contém as procedures `abrir_conta`, `deposito` e `saque`, responsáveis por validar dados, executar operações e registrar transações. Essa abordagem garante encapsulamento e controle das operações diretamente no banco.
+
+- **Camada de Automação**: Auditoria automática implementada com a trigger `trg_prevent_saldo_negativo`, que impede atualizações que resultem em saldo inferior a zero, reforçando a segurança das operações.
+
+- **Camada de Testes**: Composta por scripts SQL responsáveis por popular dados e executar cenários de teste, incluindo operações válidas e situações de erro/exceções, permitindo validar o comportamento do sistema e o funcionamento das regras implementadas.
+
+## 🗃️ Modelagem de Dados
+
+**Tabelas**
+- `CLIENTE` → Dados cadastrais do correntista
+- `CONTA` → Contas vinculadas ao cliente e saldo
+- `TRANSACAO` → Histórico de depósitos e saques
+- `AUDITORIA` → Registros automáticos de operações financeiras
+
+![Diagrama de Modelagem](docs/diagram.png)
+
+## 📏 Regras de Negócio
+
+- Cliente deve existir para abrir conta
+- Número da conta deve ser único
+- Depósitos somente com valores positivos
+- Saques somente com valores positivos
+- Conta deve existir para qualquer operação financeira
+- Nenhuma conta pode ficar com saldo negativo
+- Toda operação gera registro em `TRANSACAO`
+- Auditoria automática das operações via trigger
+
+## 🔄 Fluxo Operacional
+
+1. Cliente é cadastrado na base de dados  
+2. Conta é criada via procedure `abrir_conta`  
+3. Operações financeiras (`deposito` e `saque`) são executadas  
+4. O saldo da conta é atualizado  
+5. A transação é registrada na tabela `TRANSACAO`  
+6. A trigger valida saldo negativo automaticamente  
+7. O saldo pode ser consultado via função do package  
+
+
+## 📁 Estrutura do Repositório
+
 ```bash
 /banking-system-plsql
-│
-├── sql/
-│ ├── create_user.sql
-│ ├── create_tables.sql
-│ ├── create_trigger.sql
-│ ├── pkg_bancario_spec.sql
-│ ├── pkg_bancario_body.sql
-│ ├── test_data.sql
+├── /sql
+│   ├── 01_config_user.sql        # criação do usuário Oracle e permissões
+│   ├── 02_tables.sql             # definição das tabelas, chaves, constraints e índices auxiliares
+│   ├── 03_trigger.sql            # triggers de validação e controle de saldo
+│   ├── 04_package_spec.sql       # interface pública do package PL/SQL
+│   ├── 05_package_body.sql       # implementação da lógica de negócio
+│   ├── 06_seed_data.sql          # dados iniciais para execução do sistema
+│   └── 07_test_cases.sql         # cenários de teste e validações de regras
+├── /docs
+│   └── diagram.png               # diagrama ER da modelagem
 └── README.md
 ```
 
-## 📌 Funcionalidades do Projeto
+## ⚙️ Como Executar o Projeto 
 
-- Cadastro de cliente
-- Abertura de conta
-- Depósitos
-- Saques
-- Registro automático de transações bancárias
-- Trigger que impede saldo negativo e saque acima do saldo disponível
-- Package PL/SQL com operações bancárias (regras de negócio)
-- Registro de todas as transações
-
-## 📝 Modelagem de Dados
-
-### Tabelas
-- CLIENTE
-- CONTA
-- TRANSACAO
-
-### Trigger
-trg_prevent_saldo_negativo impede atualizações que deixem saldo negativo.
-
-### Package bancário
-Procedures:
-- abrir_conta(p_id_cliente, p_numero)
-- deposito(p_id_conta, p_valor)
-- saque(p_id_conta, p_valor)
-
-### Testes
-- Criar cliente
-- Abrir conta
-- Depositar
-- Sacar
-- Ver registros (transacao)
-
----
-
-## ⚙️ Como Rodar o Projeto
-
-Para rodar o projeto é necessário ter ter Docker
-
-### 1) Subir a imagem Oracle XE no Docker
+### 1) Subir Oracle XE no Docker
 ```bash
 docker pull gvenzl/oracle-xe
-docker run -d --name oracle-xe -p 1521:1521 gvenzl/oracle-xe
+docker run -d --name oracle-xe -p 1521:1521 -p 5500:5500 gvenzl/oracle-xe
 ```
 
-### 2) Acesse o container Oracle XE
-
+### 2) Acessar o Container
 ```bash
 docker exec -it oracle-xe bash
 sqlplus sys/oracle as sysdba
 ```
 
 ### 3) Selecionar o PDB
-
 ```bash
 ALTER SESSION SET CONTAINER = XEPDB1;
-SHOW CON_NAME;
 ```
 
-### 3) Executar os scripts
-
+### 4) Executar Scripts
 ```bash
-@sql/create_user.sql
+@01_config_user.sql
 conn bancario_test/bancario@XEPDB1
-@sql/create_tables.sql
-@sql/create_trigger.sql
-@sql/pkg_bancario_spec.sql
-@sql/pkg_bancario_body.sql
-@sql/test_data.sql
+
+@02_tables.sql
+@03_trigger.sql
+@04_package_spec.sql
+@05_package_body.sql
+@06_seed_data.sql
+@07_test_cases.sql
 ```
 
-### 4) Finalizar teste (opcional)
-
+### 5) Limpeza do Ambiente (Opcional)
 ```bash
 ALTER SESSION SET CONTAINER = XEPDB1;
--- Finaliza sessões ativas (se necessário, troque SID,SERIAL pelo real)
-ALTER SYSTEM KILL SESSION 'SID,SERIAL#' IMMEDIATE;
 DROP USER bancario_test CASCADE;
 ```
