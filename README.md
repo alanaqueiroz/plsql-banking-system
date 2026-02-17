@@ -70,7 +70,7 @@ O sistema foi estruturado em camadas lógicas dentro do banco de dados Oracle, c
 ```bash
 /banking-system-plsql
 ├── /sql
-│   ├── 01_config_user.sql        # criação do usuário Oracle e permissões
+│   ├── 01_user_config.sql        # criação do usuário Oracle e permissões
 │   ├── 02_tables.sql             # definição das tabelas, chaves, constraints e índices auxiliares
 │   ├── 03_trigger.sql            # triggers de validação e controle de saldo
 │   ├── 04_package_spec.sql       # interface pública do package PL/SQL
@@ -90,7 +90,7 @@ docker pull gvenzl/oracle-xe
 docker run -d --name oracle-xe -p 1521:1521 -p 5500:5500 gvenzl/oracle-xe
 ```
 
-### 2) Acessar o Container
+### 2) Acessar o banco como SYSDBA
 ```bash
 docker exec -it oracle-xe bash
 sqlplus sys/oracle as sysdba
@@ -99,13 +99,22 @@ sqlplus sys/oracle as sysdba
 ### 3) Selecionar o PDB
 ```bash
 ALTER SESSION SET CONTAINER = XEPDB1;
+SHOW CON_NAME;
 ```
 
-### 4) Executar Scripts
+### 4) Executar Script de Configuração do Usuário
 ```bash
-@01_config_user.sql
-conn bancario_test/bancario@XEPDB1
+@01_user_config.sql
+```
 
+### 5) Executar Script de Configuração do Usuário
+```bash
+conn bancario_test/bancario@XEPDB1
+SHOW USER;
+```
+
+### 6) Executar Scripts
+```bash
 @02_tables.sql
 @03_trigger.sql
 @04_package_spec.sql
@@ -116,6 +125,7 @@ conn bancario_test/bancario@XEPDB1
 
 ### 5) Limpeza do Ambiente (Opcional)
 ```bash
+conn sys/oracle as sysdba
 ALTER SESSION SET CONTAINER = XEPDB1;
 DROP USER bancario_test CASCADE;
 ```

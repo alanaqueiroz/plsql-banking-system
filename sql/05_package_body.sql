@@ -3,7 +3,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bancario AS
   PROCEDURE abrir_conta(p_id_cliente NUMBER, p_numero VARCHAR2) IS
     v_count NUMBER;
   BEGIN
-    SELECT COUNT(*) INTO v_count
+        SELECT COUNT(*) INTO v_count
     FROM cliente
     WHERE id_cliente = p_id_cliente;
 
@@ -39,7 +39,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bancario AS
     INSERT INTO transacao(id_conta, tipo, valor)
     VALUES (p_id_conta, 'DEPOSITO', p_valor);
 
-    DBMS_OUTPUT.PUT_LINE('Depósito realizado com sucesso.');
+    DBMS_OUTPUT.PUT_LINE('Depósito de R$ ' || p_valor || ' realizado com sucesso.');
   END deposito;
 
   PROCEDURE saque(p_id_conta NUMBER, p_valor NUMBER) IS
@@ -64,7 +64,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bancario AS
     INSERT INTO transacao(id_conta, tipo, valor)
     VALUES (p_id_conta, 'SAQUE', p_valor);
 
-    DBMS_OUTPUT.PUT_LINE('Saque realizado com sucesso.');
+    DBMS_OUTPUT.PUT_LINE('Saque de R$ ' || p_valor || ' realizado com sucesso.');
   END saque;
 
 END pkg_bancario;
