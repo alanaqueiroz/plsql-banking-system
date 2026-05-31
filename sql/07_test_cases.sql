@@ -48,6 +48,20 @@ END;
 /
 
 --------------------------------------------------------
+-- TESTE 6: Consulta de saldo com DBMS_OUTPUT.PUT_LINE
+--------------------------------------------------------
+DECLARE
+    v_saldo NUMBER;
+BEGIN
+    v_saldo := pkg_bancario.consultar_saldo(1);
+
+    DBMS_OUTPUT.PUT_LINE(
+        'Saldo atual: R$ ' || v_saldo
+    );
+END;
+/
+
+--------------------------------------------------------
 -- CONSULTAS FINAIS
 --------------------------------------------------------
 
@@ -57,5 +71,4 @@ SELECT * FROM cliente;
 
 SELECT * FROM conta;
 
-SELECT * FROM transacao
-ORDER BY id_transacao DESC;
+SELECT * FROM transacao ORDER BY id_transacao DESC;

@@ -3,7 +3,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bancario AS
   PROCEDURE abrir_conta(p_id_cliente NUMBER, p_numero VARCHAR2) IS
     v_count NUMBER;
   BEGIN
-        SELECT COUNT(*) INTO v_count
+        SELECT 1 INTO v_count
     FROM cliente
     WHERE id_cliente = p_id_cliente;
 
@@ -24,7 +24,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bancario AS
       RAISE_APPLICATION_ERROR(-20011, 'Valor do depósito deve ser maior que zero.');
     END IF;
 
-    SELECT COUNT(*) INTO v_count
+    SELECT 1 INTO v_count
     FROM conta
     WHERE id_conta = p_id_conta;
 
@@ -49,7 +49,7 @@ CREATE OR REPLACE PACKAGE BODY pkg_bancario AS
       RAISE_APPLICATION_ERROR(-20013, 'Valor do saque deve ser maior que zero.');
     END IF;
 
-    SELECT COUNT(*) INTO v_count
+    SELECT 1 INTO v_count
     FROM conta
     WHERE id_conta = p_id_conta;
 
@@ -66,6 +66,26 @@ CREATE OR REPLACE PACKAGE BODY pkg_bancario AS
 
     DBMS_OUTPUT.PUT_LINE('Saque de R$ ' || p_valor || ' realizado com sucesso.');
   END saque;
+
+  FUNCTION consultar_saldo(
+      p_id_conta NUMBER
+  ) RETURN NUMBER IS
+      v_saldo conta.saldo%TYPE;
+  BEGIN
+      SELECT saldo
+      INTO v_saldo
+      FROM conta
+      WHERE id_conta = p_id_conta;
+
+      RETURN v_saldo;
+
+  EXCEPTION
+      WHEN NO_DATA_FOUND THEN
+          RAISE_APPLICATION_ERROR(
+              -20015,
+              'Conta não encontrada.'
+          );
+  END consultar_saldo;
 
 END pkg_bancario;
 /

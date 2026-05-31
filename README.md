@@ -1,25 +1,62 @@
 # 🏦 Sistema Bancário Implementado em Oracle PL/SQL
 
-Projeto voltado ao desenvolvimento de um sistema bancário simplificado com centralização das regras de negócio em PL/SQL no banco de dados Oracle. Simula operações bancárias como cadastro de clientes, abertura de contas, depósitos, saques e consulta de saldo via function. As regras de negócio são centralizadas em package PL/SQL, com trigger para prevenção de saldo negativo e registro automático para auditoria das transações financeiras.
+Projeto acadêmico de desenvolvimento de um sistema bancário que simula operações bancárias essenciais, aplicando PL/SQL para centralizar as regras de negócio em Oracle Database. O sistema contempla cadastro de clientes, abertura de contas bancárias, depósitos, saques, consulta de saldo e registro automático de transações financeiras para rastreabilidade das operações. As regras de negócio foram implementadas diretamente no banco de dados por meio de Procedures, Functions, Triggers, Packages e Constraints.
 
-**Objetivo**:
-- Aplicar PL/SQL na implementação de regras de negócio
-- Demonstrar automação e auditoria através de triggers
-- Simular arquitetura de sistemas financeiros
-- Consolidar boas práticas de modelagem relacional e programação Oracle
+**Objetivos**:
+- Implementar regras de negócio para operações bancárias utilizando PL/SQL no Oracle Database.
+- Garantir consistência, integridade e rastreabilidade das transações financeiras.
+- Utilizar Packages, Procedures, Functions, Triggers e Constraints para reproduzir conceitos presentes em sistemas financeiros e plataformas de core banking, como centralização da lógica de negócio, validações transacionais e rastreabilidade das operações.
+- Aplicar boas práticas de modelagem relacional e desenvolvimento de banco de dados no Oracle Database.
 
-**Contexto**: Projeto acadêmico desenvolvido na disciplina Laboratório de Desenvolvimento em Banco de Dados VI do curso Tecnologia em Banco de Dados da FATEC (Faculdade de Tecnologia de Bauru).
-
-🎥 **Apresentação do Projeto (YouTube):** https://youtu.be/neQLM0JzVns
+🎥 **Vídeo de Apresentação do Projeto:** https://youtu.be/neQLM0JzVns
 
 ## ⚙️ Tecnologias Utilizadas
 
-- Oracle Database XE 21c
-- PL/SQL (Packages, Procedures, Functions, Triggers, Constraints)
-- SQL
-- Docker (Imagem `gvenzl/oracle-xe`)
-- SQL*Plus
-- Ubuntu via WSL
+- **Oracle Database XE 21c**: SGBD utilizado para armazenamento e execução das regras de negócio.
+- **PL/SQL**: desenvolvimento de Packages, Procedures, Functions, Triggers e tratamento de exceções.
+- **SQL**: definição de estruturas, consultas e manipulação de dados.
+- **Docker**: execução isolada do Oracle XE.
+- **SQL*Plus**: administração, execução e testes dos scripts.
+- **Ubuntu (WSL)**: ambiente Linux para execução do banco de dados.
+- **Windows 11**: sistema operacional hospedeiro.
+
+## 📏 Funcionalidades e Regras de Negócio
+
+- **👤 Cadastro de Clientes**
+	- Registro de clientes com informações cadastrais.
+	- CPF único para cada cliente.
+	- Validação de integridade dos dados cadastrados.
+
+- **🏦 Abertura de Contas**
+	- Conta pode ser criada apenas para clientes previamente cadastrados.
+	- Associação automática entre cliente e conta.
+	- Identificação única para cada conta bancária.
+
+- **💰 Depósitos**
+	- Aceita somente valores positivos.
+	- Atualização automática do saldo da conta.
+	- Registro automático da movimentação financeira.
+
+- **💸 Saques**
+	- Aceita somente valores positivos.
+	- Impedimento de saldo negativo por meio de trigger.
+	- Registro automático da movimentação financeira.
+
+- **📊 Consulta de Saldo**
+	- Implementada por meio de function.
+	- Retorna o saldo atual da conta.
+	- Valida a existência da conta antes da consulta.
+
+- **📝 Registro de Transações**
+	- Registro automático de todas as movimentações financeiras.
+	- Armazena o histórico com tipo da operação, valor e data da transação.
+	- Disponibiliza informações que permitem rastrear e auditar as operações executadas.
+
+- **⚙️ Centralização das Regras de Negócio**
+	- Procedures e Functions encapsuladas em Package PL/SQL.
+	- Validações executadas diretamente no banco de dados.
+	- Tratamento de exceções para operações inválidas.
+	- Aplicação de constraints e integridade referencial para garantir consistência dos dados.
 
 ## 🏗️ Arquitetura do Projeto
 
@@ -27,32 +64,11 @@ O sistema foi estruturado em camadas lógicas dentro do banco de dados Oracle, c
 
 - **Camada de Dados**: Responsável pela estrutura relacional e armazenamento dos dados. É composta pelas tabelas `CLIENTE`, `CONTA` e `TRANSACAO`, utilizando chaves primárias, estrangeiras, constraints UNIQUE, CHECK e colunas com IDENTITY para geração automática de identificadores. Essa camada assegura persistência das informações, integridade referencial e consistência estrutural do banco.
 
-- **Camada de Lógica**: Implementada por meio do package `pkg_bancario` (spec e body), que centraliza as regras de negócio do sistema. Contém as procedures `abrir_conta`, `deposito` e `saque`, responsáveis por validar dados, executar operações e registrar transações. Essa abordagem garante encapsulamento e controle das operações diretamente no banco.
+- **Camada de Lógica**: Implementada por meio do package `pkg_bancario` (spec e body), que centraliza as regras de negócio do sistema. Contém as procedures `abrir_conta`, `deposito` e `saque`, além da function `consultar_saldo`, responsáveis por validar dados, executar operações e disponibilizar consultas ao saldo das contas.
 
-- **Camada de Automação**: Auditoria automática implementada com a trigger `trg_prevent_saldo_negativo`, que impede atualizações que resultem em saldo inferior a zero, reforçando a segurança das operações.
+- **Camada de Automação**: Implementada por meio da trigger `trg_prevent_saldo_negativo`, responsável por impedir atualizações que resultem em saldo inferior a zero, reforçando a integridade e a segurança das operações financeiras.
 
-- **Camada de Testes**: Composta por scripts SQL responsáveis por popular dados e executar cenários de teste, incluindo operações válidas e situações de erro/exceções, permitindo validar o comportamento do sistema e o funcionamento das regras implementadas.
-
-## 🗃️ Modelagem de Dados
-
-**Tabelas**
-- `CLIENTE` → Dados cadastrais do correntista
-- `CONTA` → Contas vinculadas ao cliente e saldo
-- `TRANSACAO` → Histórico de depósitos e saques
-- `AUDITORIA` → Registros automáticos de operações financeiras
-
-![Diagrama de Modelagem](docs/diagram.png)
-
-## 📏 Regras de Negócio
-
-- Cliente deve existir para abrir conta
-- Número da conta deve ser único
-- Depósitos somente com valores positivos
-- Saques somente com valores positivos
-- Conta deve existir para qualquer operação financeira
-- Nenhuma conta pode ficar com saldo negativo
-- Toda operação gera registro em `TRANSACAO`
-- Auditoria automática das operações via trigger
+- **Camada de Testes**: Composta por scripts SQL responsáveis por popular dados e executar cenários de teste com operações válidas e situações de erro/exceções, permitindo validar o comportamento do sistema e o funcionamento das regras implementadas.
 
 ## 🔄 Fluxo Operacional
 
@@ -62,8 +78,58 @@ O sistema foi estruturado em camadas lógicas dentro do banco de dados Oracle, c
 4. O saldo da conta é atualizado  
 5. A transação é registrada na tabela `TRANSACAO`  
 6. A trigger valida saldo negativo automaticamente  
-7. O saldo pode ser consultado via função do package  
+7. O saldo pode ser consultado via função do package
 
+## 🔧 Componentes
+
+Relacionamento `Cliente → Conta → Transação`, seguindo práticas de normalização com regras de integridade referencial implementadas com FKs e constraints.
+
+### Tabelas
+- `CLIENTE`: Dados cadastrais do correntista
+- `CONTA`: Contas vinculadas ao cliente e saldo
+- `TRANSACAO`: Histórico de depósitos e saques
+
+<p align="center"><strong>Modelagem de Dados - Diagrama ER (Mermaid)</strong></p>
+
+```mermaid
+erDiagram
+    direction LR
+
+    CLIENTE {
+        NUMBER ID_CLIENTE PK
+        VARCHAR NOME
+        VARCHAR CPF
+    }
+
+    CONTA {
+        NUMBER ID_CONTA PK
+        NUMBER ID_CLIENTE FK
+        VARCHAR NUMERO
+        NUMBER SALDO
+    }
+
+    TRANSACAO {
+        NUMBER ID_TRANSACAO PK
+        NUMBER ID_CONTA FK
+        VARCHAR TIPO
+        NUMBER VALOR
+        DATE DATA_TRANS
+    }
+
+    CLIENTE ||--o{ CONTA : possui
+    CONTA ||--o{ TRANSACAO : registra
+```
+
+### Package `pkg_bancario`
+
+- `abrir_conta()` → criação de contas bancárias
+- `deposito()` → realização de depósitos
+- `saque()` → realização de saques
+- `consultar_saldo()` → consulta do saldo da conta
+
+### Trigger
+
+- `trg_prevent_saldo_negativo` → impede atualização de saldo para valores negativos
 
 ## 📁 Estrutura do Repositório
 
@@ -77,8 +143,6 @@ O sistema foi estruturado em camadas lógicas dentro do banco de dados Oracle, c
 │   ├── 05_package_body.sql       # implementação da lógica de negócio
 │   ├── 06_seed_data.sql          # dados iniciais para execução do sistema
 │   └── 07_test_cases.sql         # cenários de teste e validações de regras
-├── /docs
-│   └── diagram.png               # diagrama ER da modelagem
 └── README.md
 ```
 
@@ -107,7 +171,7 @@ SHOW CON_NAME;
 @01_user_config.sql
 ```
 
-### 5) Executar Script de Configuração do Usuário
+### 5) Conectar como Usuário da Aplicação
 ```bash
 conn bancario_test/bancario@XEPDB1
 SHOW USER;
@@ -123,9 +187,23 @@ SHOW USER;
 @07_test_cases.sql
 ```
 
-### 5) Limpeza do Ambiente (Opcional)
-```bash
-conn sys/oracle as sysdba
-ALTER SESSION SET CONTAINER = XEPDB1;
-DROP USER bancario_test CASCADE;
-```
+## 🧪 Cenários de Teste
+
+Casos validados durante o desenvolvimento:
+
+- Cadastro de cliente
+- Abertura de conta para cliente existente
+- Depósito em conta válida
+- Saque com saldo suficiente
+- Consulta de saldo via Function
+- Registro automático das movimentações em `TRANSACAO`
+- Bloqueio de CPF duplicado
+- Bloqueio de número de conta duplicado
+- Impedimento de depósitos com valor menor ou igual a zero
+- Impedimento de saques com valor menor ou igual a zero
+- Impedimento de operações em contas inexistentes
+- Impedimento de saldo negativo por Trigger
+
+## 🎓 Contexto Acadêmico
+
+Projeto acadêmico desenvolvido em 2025 por **Alana Queiroz Braga** na disciplina **Laboratório de Desenvolvimento em Banco de Dados VI** do Curso Superior de **Tecnologia em Banco de Dados** da **Faculdade de Tecnologia de Bauru (FATEC)**.

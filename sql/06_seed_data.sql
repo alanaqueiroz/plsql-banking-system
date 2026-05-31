@@ -29,3 +29,7 @@ END;
 
 -- 5) Verificar saldo final esperado (300)
 SELECT saldo FROM conta WHERE id_conta = 1;
+
+-- 6) Verificar saldo via procedure consultar_saldo
+SELECT consultar_saldo(1)
+FROM dual;
