@@ -122,14 +122,14 @@ erDiagram
 
 ### Package `pkg_bancario`
 
-- `abrir_conta()` → criação de contas bancárias
-- `deposito()` → realização de depósitos
-- `saque()` → realização de saques
-- `consultar_saldo()` → consulta do saldo da conta
+- `abrir_conta()`: criação de contas bancárias
+- `deposito()`: realização de depósitos
+- `saque()`: realização de saques
+- `consultar_saldo()`: consulta do saldo da conta
 
 ### Trigger
 
-- `trg_prevent_saldo_negativo` → impede atualização de saldo para valores negativos
+- `trg_prevent_saldo_negativo`: impede atualização de saldo para valores negativos
 
 ## 📁 Estrutura do Repositório
 
